@@ -94,7 +94,7 @@ class baseController {
     }
 
 	public function get_table($values, $pretty=false){
-		$output = '<table><tr>';
+		$output = '<table class="table-striped"><thead><tr>';
 		foreach( $values as $row ){
 			if( ! @$header ){
 				$header = array_keys($row);
@@ -105,7 +105,7 @@ class baseController {
 						$output .= '<th>' . $field . '</th>';
 					}
 				}
-				$output .= '</tr>';
+				$output .= '</tr></thead><tbody>';
 			}
 			$output .= '<tr>';
 			foreach( $header as $field ){
@@ -113,7 +113,7 @@ class baseController {
 			}
 			$output .= '</tr>';
 		}
-		$output .= '</table>';
+		$output .= '</tbody></table>';
 		return $output;
 	}
 
@@ -128,6 +128,61 @@ class baseController {
 			return;
 		}
 		return $type[0];
+	}
+
+	public function get_customer($id){
+		$query = 
+		"select
+			concat(customer.first_name, ' ', customer.last_name) as full_name,
+			customer.first_name,
+			customer.last_name,
+			address.address,
+			city.city,
+			country.country,
+			address.postal_code,
+			address.phone	
+		from customer
+		inner join address
+			on customer.address_id = address.address_id
+		inner join city
+			on address.city_id = city.city_id
+		inner join country
+			on city.country_id = country.country_id
+		where customer.customer_id = $id";
+		$data = $this->query($query);
+		return $data[0];
+	}
+
+	public function get_rentals($customer_id){
+		$query = "select
+	film.title,
+	category.name as category,
+	rental.rental_date,
+	rental.return_date,
+	round(TIMESTAMPDIFF(HOUR, rental.rental_date, rental.return_date) / 24, 2) as days_before_return,
+	film.rental_duration as days_allowed,
+	CASE
+		WHEN 
+			round(TIMESTAMPDIFF(HOUR, rental.rental_date, rental.return_date) / 24, 2) > film.rental_duration
+		THEN
+			'LATE'
+		ELSE
+			''
+	END as return_status
+from customer
+inner join rental
+	on customer.customer_id = rental.customer_id
+inner join inventory
+	on rental.inventory_id = inventory.inventory_id
+inner join film
+	on film.film_id = inventory.film_id
+inner join film_category
+	on film.film_id = film_category.film_id
+inner join category
+	on film_category.category_id = category.category_id
+where customer.customer_id = $customer_id
+order by rental_date;";
+		return $this->query($query);
 	}
 
 	public function build_select($args){
