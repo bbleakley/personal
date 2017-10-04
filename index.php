@@ -4,7 +4,7 @@ echo '<link rel="stylesheet" href="CSS/main.css" type="text/css">';
 echo '</br></br><h1>Sakila Database</h1></br>';
 $bc = new baseController();
 echo $bc->get_table_dropdown();
-
+echo "<h1><a href=\"boots/about.php\">BOOTS</h1>";
 /*
 $config = include('/var/www/config.php');
 $mysqli = new mysqli($config["host"], $config["username"], $config["password"], $config["database"]);

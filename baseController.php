@@ -136,11 +136,18 @@ class baseController {
 			concat(customer.first_name, ' ', customer.last_name) as full_name,
 			customer.first_name,
 			customer.last_name,
+			count(rental_id) as rentals,
+			case
+				when store_id = 1
+				then 'Canada'
+				else 'Australia'
+			end as store,
+			address.phone,
+			customer.email,
 			address.address,
 			city.city,
 			country.country,
-			address.postal_code,
-			address.phone	
+			address.postal_code
 		from customer
 		inner join address
 			on customer.address_id = address.address_id
@@ -148,41 +155,185 @@ class baseController {
 			on address.city_id = city.city_id
 		inner join country
 			on city.country_id = country.country_id
-		where customer.customer_id = $id";
+		left join rental
+			on customer.customer_id = rental.customer_id
+		where customer.customer_id = $id
+		group by customer.customer_id";
 		$data = $this->query($query);
 		return $data[0];
 	}
 
-	public function get_rentals($customer_id){
-		$query = "select
-	film.title,
-	category.name as category,
-	rental.rental_date,
-	rental.return_date,
-	round(TIMESTAMPDIFF(HOUR, rental.rental_date, rental.return_date) / 24, 2) as days_before_return,
-	film.rental_duration as days_allowed,
-	CASE
-		WHEN 
-			round(TIMESTAMPDIFF(HOUR, rental.rental_date, rental.return_date) / 24, 2) > film.rental_duration
-		THEN
-			'LATE'
-		ELSE
-			''
-	END as return_status
-from customer
-inner join rental
-	on customer.customer_id = rental.customer_id
-inner join inventory
-	on rental.inventory_id = inventory.inventory_id
-inner join film
-	on film.film_id = inventory.film_id
-inner join film_category
-	on film.film_id = film_category.film_id
-inner join category
-	on film_category.category_id = category.category_id
-where customer.customer_id = $customer_id
-order by rental_date;";
+	public function get_film($id){
+		$query =
+		"select
+			film.title as title,
+			category.name as category,
+			film.rating as rating,
+			film.description as description,
+			film.special_features as special_features,
+			film.release_year as release_year,
+			film.length as length,
+			film.rental_duration as rental_duration,
+			film.rental_rate as rental_rate,
+			film.replacement_cost as replacement_cost
+		from film
+		inner join film_category
+			on film.film_id = film_category.film_id
+		inner join category
+			on film_category.category_id = category.category_id
+		left join(
+			select
+				film_id,
+				count(inventory_id) as count
+			from inventory i
+			where store_id = 1
+			group by film_id
+		) as fi
+			on film.film_id = fi.film_id
+		left join(
+			select 
+				film_id,
+				count(inventory_id) as count
+			from inventory i
+			where store_id = 2
+			group by film_id
+		) as si
+			on film.film_id = si.film_id
+		where film.film_id = $id;";
+		$data = $this->query($query);
+		return $data[0];
+	}
+
+	public function get_customer_rentals($customer_id){
+		$query = 
+		"select
+			film.film_id,
+			film.title,
+			category.name as category,
+			film.rating,
+			rental.rental_date,
+			rental.return_date,
+			DATEDIFF(ifnull(rental.return_date,CURRENT_DATE()), rental.rental_date) as days_before_return,
+			film.rental_duration as days_allowed,
+			CASE
+				WHEN 
+					DATEDIFF(ifnull(rental.return_date,CURRENT_DATE()), rental.rental_date) > film.rental_duration
+				THEN
+					'LATE'
+				ELSE
+					''
+			END as return_status
+		from customer
+		inner join rental
+			on customer.customer_id = rental.customer_id
+		inner join inventory
+			on rental.inventory_id = inventory.inventory_id
+		inner join film
+			on film.film_id = inventory.film_id
+		inner join film_category
+			on film.film_id = film_category.film_id
+		inner join category
+			on film_category.category_id = category.category_id
+		where customer.customer_id = $customer_id
+		order by rental_date;";
 		return $this->query($query);
+	}
+
+	public function get_film_rentals($film_id){
+		$query = 
+		"select
+			c.customer_id,
+			concat(c.first_name,' ', c.last_name) as customer,
+			r.rental_date,
+			r.return_date,
+			DATEDIFF(r.return_date, r.rental_date) as days_to_return,
+			case
+				when DATEDIFF(r.return_date, r.rental_date) > f.rental_duration
+				then 'LATE'
+				else ''
+			end as return_status
+		from film f
+		inner join inventory i
+			on f.film_id = i.film_id
+		inner join rental r
+			on i.inventory_id = r.inventory_id
+		inner join customer c
+			on r.customer_id = c.customer_id
+		where f.film_id = 1
+		order by c.last_name;";
+		return $this->query($query);
+	}
+
+	public function get_customer_categories($customer_id){
+		$query = 
+		"select
+			ca.name,
+			count(r.rental_id) as count
+		from customer c
+		inner join rental r
+			on c.customer_id = r.customer_id
+		inner join inventory i
+			on r.inventory_id = i.inventory_id
+		inner join film f
+			on i.film_id = f.film_id
+		inner join film_category fc
+			on f.film_id = fc.film_id
+		inner join category ca
+			on fc.category_id = ca.category_id
+		where c.customer_id = $customer_id
+		group by c.customer_id, ca.category_id
+		order by count(rental_id) desc";
+		$data = $this->query($query);
+		
+		foreach( $data as $row ){
+			if( ! @$header ){
+				$output = "[['Category', 'Count']"; 
+				$header = true;
+			}
+			$category = $row['name'];
+			$count = $row['count'];
+			$output .= ", ['$category', $count]";
+		}
+		return $output ."]";
+		
+	}
+
+	public function get_customer_actor($customer_id){
+		$query = 
+		"select
+			a.actor_id,
+			concat(a.first_name, ' ', a.last_name) as name,
+			count(r.rental_id) as count
+		from customer c
+		inner join rental r
+			on c.customer_id = r.customer_id
+		inner join inventory i
+			on r.inventory_id = i.inventory_id
+		inner join film f
+			on i.film_id = f.film_id
+		inner join film_actor fa
+			on f.film_id = fa.film_id
+		inner join actor a
+			on fa.actor_id = a.actor_id
+		where c.customer_id = $customer_id
+		group by c.customer_id, a.actor_id
+		order by count(r.rental_id) desc
+		limit 5;";
+		$data = $this->query($query);
+		foreach( $data as $row ){
+			if( ! @$header ){
+				$output = "[['Actor', 'Rentals of Films Starring this Actor']"; 
+				$header = true;
+			}
+			$name = ucwords(strtolower($row['name']));
+			$count = $row['count'];
+			$output .= ", ['$name', $count]";
+		}
+		return $output ."]";
+	}
+
+	public function get_film_actor($film_id){
+
 	}
 
 	public function build_select($args){

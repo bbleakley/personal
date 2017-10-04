@@ -20,12 +20,13 @@
         <a href="/boots/customers.php">Customers</a>
         <a href="#">Contact</a>
       </div>
-      <div class="jumbotron text-center">
+      <div id="header" class="jumbotron text-center">
         <h1>Customers</h1>
       </div>
 		<div class = "row">
+      <div class="col-xs-12 col-lg12"
 			<div class="table-responsive">
-        <table class="table-hover">
+        <table class="table table-hover full-width-table">
 					<?php
 						include('../baseController.php');
 						$bc = new baseController();
@@ -75,6 +76,7 @@ order by last_name;";
             }
 					?>
           </table>
+          </div>
 			</div>
 		</div>
   </div>

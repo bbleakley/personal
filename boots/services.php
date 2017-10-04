@@ -20,7 +20,7 @@
         <a href="/boots/customers.php">Customers</a>
         <a href="#">Contact</a>
       </div>
-      <div class="jumbotron text-center">
+      <div id="header" class="jumbotron text-center">
         <h1>Services</h1>
       </div>
       <div class="row">
@@ -32,22 +32,13 @@
           <p>If you're looking for great films, you've come to the right place!</p>
         </div>
         <div class="col-sm-12 col-lg-6">
-          <img class="img-responsive" src="../resources/images/movie_rentals.jpg">
+          <img class="img img-responsive" src="../resources/images/movie_rentals.jpg">
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12 col-lg-6">
-          <img class="img-responsive" src="../resources/images/blinds.jpg">
+          <img class="img-responsive" src="../resources/images/database.jpg">
         </div>
-        <div class="col-sm-12 col-lg-6">
-          <h2>Creeping</h2>
-          <p>have you ever seen a movie about the government watching somebody and collecting as much data as possible about him or her?</p>
-          <p>Ever wonder if that was happening to you?</p>
-          <p>While all signs point to yes on the government side, I can say for certain that Sakila is doing our part and collecting and storing all sorts of information about our customers, stores, films and more!</p>
-          <p>We understand that may make you uncomfortable</p>
-        </div>
-      </div>
-      <div class="row">
         <div class="col-sm-12 col-lg-6">
           <h2>Data Analysis</h2>
           <p>Thanks to all of the data we've silently aquired from our wonderful customers, we've been able to construct a detailed database.</p>
@@ -59,9 +50,19 @@
             <li>Track down the hot chick who in front of you in line last time!</li>
           </ul>
         </div>
+      </div>
+      <div class="row">
         <div class="col-sm-12 col-lg-6">
-          <img class="img-responsive" src="../resources/images/database.jpg">
+          <h2>Creeping</h2>
+          <p>have you ever seen a movie about the government watching somebody and collecting as much data as possible about him or her?</p>
+          <p>Ever wonder if that was happening to you?</p>
+          <p>While all signs point to yes on the government side, I can say for certain that Sakila is doing our part and collecting and storing all sorts of information about our customers, stores, films and more!</p>
+          <p>We understand that may make you uncomfortable</p>
         </div>
+        <div class="col-sm-12 col-lg-6">
+          <img class="img-responsive" src="../resources/images/blinds1.jpg">
+        </div>
+      </div>
     </div>
   </div>
   <div class="footer">

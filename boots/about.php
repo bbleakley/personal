@@ -20,7 +20,7 @@
                 <a href="/boots/customers.php">Customers</a>
                 <a href="#">Contact</a>
             </div>
-            <div class="jumbotron text-center">
+            <div id = "header" class="jumbotron text-center">
                 <h1>About Us</h1>
             </div>
             <div class="row">

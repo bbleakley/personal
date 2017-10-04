@@ -1,10 +1,12 @@
 body {
     font-family: "Lato", sans-serif;
+    background-color: #f0a531;
+    color: #a74e57;
 }
 
 #menuButton {
     position: fixed;
-    padding: 15px;
+    padding: 20px;
 }
 
 .sidenav {
@@ -14,23 +16,26 @@ body {
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: #fffff8;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
 }
 
 .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
     font-size: 25px;
-    color: #818181;
     display: block;
+    padding: 8px 8px 8px 32px;
+}
+
+a {
+    text-decoration: none;
+    color: #6e96cc;
     transition: 0.3s;
 }
 
-.sidenav a:hover {
-    color: #f1f1f1;
+a:hover {
+    color: #197c92;
 }
 
 .sidenav .closebtn {
@@ -46,6 +51,22 @@ body {
     padding: 16px;
 }
 
+.row {
+    background-color:#fffff8;
+    border: 10px solid #197c92;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 20px;
+}
+
+.section{
+    border: 10px solid #197c92;
+    border-radius: 10px;
+}
+
 .container-fluid {
     margin-bottom: 50px;
     margin-left: 120px;
@@ -58,14 +79,22 @@ tr {
     padding-bottom:2px;
 }
 
+#header{
+    border: 10px solid #197c92;
+    border-radius: 10px;
+    margin-top: 15px;
+    background-color: #a74e57;
+    color: #f0a531;
+}
+
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
 	height: 50px;
-    background-color: red;
-    color: white;
+    background-color: #197c92;
+    color: #fffff8;
     text-align: center;
 }
 
@@ -79,9 +108,105 @@ h1{
 	text-align:center;
 }
 
-.img-responsive {
+table{
+    width:100%;
+}
+
+.full-width-table{
+    min-width:800px;
+}
+
+th{
+    overflow-x:auto;
+}
+
+#film-table {
+    min-width:850px;
+}
+
+#customer-rentals {
+    min-width:850px;
+}
+
+#charts {
+    min-width:600px;
+}
+
+#piechart {
+    text-align: center;
+}
+
+#piechart div {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#barchart {
+    display: block;
     margin: 0 auto;
+}
+
+#barchart div {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#g-rating{
+    background-color: #d2e9ff;
+    text-align: center;
+}
+
+#pg-rating{
+    background-color:#b2f2b0;
+    text-align: center;
+}
+
+#pg13-rating{
+    background-color: #ffee8a;
+    text-align: center;
+}
+
+#r-rating{
+    background-color: #ffcaa7;
+    text-align: center;
+}
+
+#nc17-rating{
+    background-color: #ff9999;
+    text-align: center;
+}
+
+#film_logo {
+    height:400px;
+    width: 400px;
+    margin-top:10px;
+}
+
+#film-preview {
+    min-width: 550px;
+}
+
+#creep image{
+    display: inherit;
+}
+
+.img-inner {
+    width:100%;
+    height:100%;
+    text-align: center;
+}
+
+.img-responsive {
+    margin: auto;
     margin-top: 30px;
+    margin-bottom: 30px;
+    margin-right:30px;
+}
+
+.alert {
+    text-align:center;
 }
 
 @media screen and (max-height: 450px) {
